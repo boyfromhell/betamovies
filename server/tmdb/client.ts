@@ -68,6 +68,7 @@ export class TmdbClient {
                 return cached;
             }
         }
+        const http = this.http;
         let result: JsonObject | null = null;
         for (let attempt = 0; attempt < 3; attempt++) {
             this.signal?.throwIfAborted();
@@ -83,7 +84,7 @@ export class TmdbClient {
             );
             let response: Response;
             try {
-                response = await this.http(url, {
+                response = await http(url, {
                     method,
                     headers: {
                         Authorization: `Bearer ${token}`,

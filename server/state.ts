@@ -29,7 +29,8 @@ export class StateStore {
         if (!url.startsWith('https://')) {
             throw new AppError(503, 'The state storage URL must use HTTPS.');
         }
-        const response = await this.http(url, {
+        const http = this.http;
+        const response = await http(url, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${setting(this.env, 'KV_REST_API_TOKEN')}`,

@@ -129,6 +129,7 @@ export class Players {
             );
         const replacements: Record<string, string | number | null | undefined> =
             { tmdb, imdb, season, episode };
+        const http = this.http;
         const sources = await Promise.all(
             servers.map(async (server) => {
                 const template = text(
@@ -154,7 +155,7 @@ export class Players {
                 }
                 if (server.response_mode === 'body_url') {
                     try {
-                        const response = await this.http(url, {
+                        const response = await http(url, {
                             redirect: 'manual',
                             signal: AbortSignal.timeout(5000),
                             headers: { Accept: 'text/plain' },
