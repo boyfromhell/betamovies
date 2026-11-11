@@ -23,5 +23,8 @@
         {
             "binding": "STATE"
         }
-    ]
+    ],
+    "triggers": {
+        "crons": ["0 1 * * *"]
+    }
 }
