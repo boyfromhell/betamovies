@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json.schemastore.org/wrangler.json",
+    "name": "betamovies",
+    "main": "server/worker.ts",
+    "compatibility_date": "2026-11-11",
+    "keep_vars": true,
+    "assets": {
+        "directory": "./dist",
+        "binding": "ASSETS",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": [
+            "/*",
+            "!/assets/*",
+            "!/icons/*",
+            "!/fonts/*",
+            "!/favicon.svg",
+            "!/favicon.ico",
+            "!/apple-touch-icon.png",
+            "!/robots.txt"
+        ]
+    }
+}

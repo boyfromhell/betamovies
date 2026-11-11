@@ -10,8 +10,11 @@ export interface KvBinding {
     ): Promise<void>;
     delete(key: string): Promise<void>;
 }
+export interface AssetBinding {
+    fetch(request: Request): Promise<Response>;
+}
 export type Environment = {
-    [key: string]: string | KvBinding | undefined;
+    [key: string]: string | KvBinding | AssetBinding | undefined;
     STATE?: KvBinding;
 };
 export const setting = (
