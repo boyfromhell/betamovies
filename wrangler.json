@@ -18,5 +18,10 @@
             "!/apple-touch-icon.png",
             "!/robots.txt"
         ]
-    }
+    },
+    "kv_namespaces": [
+        {
+            "binding": "STATE"
+        }
+    ]
 }

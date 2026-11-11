@@ -1,6 +1,16 @@
-import { AppError, setting, type Environment } from './types.ts';
+import {
+    AppError,
+    setting,
+    type Environment,
+    type KvBinding,
+} from './types.ts';
 
 const memory = new Map<string, { value: unknown; expires: number }>();
+
+const kvRateLimits = new WeakMap<
+    KvBinding,
+    Map<string, { count: number; expires: number }>
+>();
 
 export class StateStore {
     readonly durable: boolean;
@@ -114,7 +124,22 @@ export class StateStore {
     async limit(key: string, maximum: number, seconds: number): Promise<void> {
         const name = `limit:${key}:${Math.floor(Date.now() / (seconds * 1000))}`;
         let count: number;
-        if (this.durable && !this.env.STATE) {
+        if (this.env.STATE) {
+            let limits = kvRateLimits.get(this.env.STATE);
+            if (!limits) {
+                limits = new Map();
+                kvRateLimits.set(this.env.STATE, limits);
+            }
+            const entry = limits.get(name);
+            count = (entry && entry.expires > Date.now() ? entry.count : 0) + 1;
+            if (!limits.has(name) && limits.size >= 512) {
+                const oldest = limits.keys().next().value;
+                if (oldest) {
+                    limits.delete(oldest);
+                }
+            }
+            limits.set(name, { count, expires: Date.now() + seconds * 1000 });
+        } else if (this.durable) {
             count = Number(await this.command(['INCR', `betamovies:${name}`]));
             if (count === 1) {
                 await this.command(['EXPIRE', `betamovies:${name}`, seconds]);
