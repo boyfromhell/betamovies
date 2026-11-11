@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -eu
+
+cd "$(git rev-parse --show-toplevel)"
+
+printf "%s\n" "Pre-push: running build, lint, type checks and tests." >&2
+for script in build check types:check test; do
+    npm run "$script" </dev/null
+done
+printf "%s\n" "Pre-push: all checks passed." >&2

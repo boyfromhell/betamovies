@@ -1,0 +1,63 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "framework": "vite",
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "functions": {
+        "api/index.ts": {
+            "maxDuration": 60,
+            "includeFiles": "dist/index.html"
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "/api/index?__path=/api/:path*"
+        },
+        {
+            "source": "/:path*",
+            "has": [
+                {
+                    "type": "header",
+                    "key": "x-inertia",
+                    "value": "true"
+                }
+            ],
+            "destination": "/api/index?__path=/:path*"
+        },
+        {
+            "source": "/catalog/search",
+            "destination": "/api/index?__path=/catalog/search"
+        },
+        {
+            "source": "/watchlist/:type/:id",
+            "destination": "/api/index?__path=/watchlist/:type/:id"
+        },
+        {
+            "source": "/locale",
+            "destination": "/api/index?__path=/locale"
+        },
+        {
+            "source": "/admin/:path*",
+            "destination": "/api/index?__path=/admin/:path*"
+        },
+        {
+            "source": "/watch/verify",
+            "destination": "/api/index?__path=/watch/verify"
+        },
+        {
+            "source": "/sitemap.xml",
+            "destination": "/api/index?__path=/sitemap.xml"
+        },
+        {
+            "source": "/:path*",
+            "destination": "/index.html"
+        }
+    ],
+    "crons": [
+        {
+            "path": "/api/scan-episodes",
+            "schedule": "0 1 * * *"
+        }
+    ]
+}
